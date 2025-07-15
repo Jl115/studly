@@ -1,6 +1,6 @@
 // controllers/database_controller.dart
 import 'package:sqflite/sqflite.dart';
-import 'package:studly/app/core/database/database.service.dart';
+import 'package:studly/app/core/database/service/database.service.dart';
 import 'package:studly/app/core/database/repository/database.repository.dart';
 
 class DatabaseController extends BaseDatabaseRepository {

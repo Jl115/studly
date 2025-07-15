@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
-import '../../../../core/providers/theme_provider.dart';
+import '../providers/auth.provider.dart';
+import '../../../../core/providers/theme.provider.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -31,9 +31,12 @@ class _AuthScreenState extends State<AuthScreen> {
         actions: [
           IconButton(
             icon: Consumer<ThemeProvider>(
-              builder: (context, themeProvider, child) => Icon(
-                themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode,
-              ),
+              builder:
+                  (context, themeProvider, child) => Icon(
+                    themeProvider.isDarkMode
+                        ? Icons.light_mode
+                        : Icons.dark_mode,
+                  ),
             ),
             onPressed: () {
               context.read<ThemeProvider>().toggleTheme();
@@ -58,7 +61,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
                 ),
                 const SizedBox(height: 48),
-                
+
                 // Username Field
                 TextFormField(
                   controller: _usernameController,
@@ -74,7 +77,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Password Field
                 TextFormField(
                   controller: _passwordController,
@@ -94,7 +97,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   },
                 ),
                 const SizedBox(height: 24),
-                
+
                 // Error Message
                 Consumer<AuthProvider>(
                   builder: (context, authProvider, child) {
@@ -112,23 +115,32 @@ class _AuthScreenState extends State<AuthScreen> {
                     return const SizedBox.shrink();
                   },
                 ),
-                
+
                 // Login/Register Button
                 Consumer<AuthProvider>(
                   builder: (context, authProvider, child) {
                     return SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: authProvider.isLoading ? null : _handleSubmit,
-                        child: authProvider.isLoading
-                            ? const CircularProgressIndicator()
-                            : Text(_isLogin ? 'Login' : 'Register'),
+                        onPressed:
+                            authProvider.isLoading
+                                ? null
+                                : () async => await authProvider.handleSubmit(
+                                  _formKey,
+                                  _isLogin,
+                                  _usernameController,
+                                  _passwordController,
+                                ),
+                        child:
+                            authProvider.isLoading
+                                ? const CircularProgressIndicator()
+                                : Text(_isLogin ? 'Login' : 'Register'),
                       ),
                     );
                   },
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Switch between Login/Register
                 TextButton(
                   onPressed: () {
@@ -149,30 +161,5 @@ class _AuthScreenState extends State<AuthScreen> {
         ),
       ),
     );
-  }
-
-  void _handleSubmit() async {
-    if (_formKey.currentState!.validate()) {
-      final authProvider = context.read<AuthProvider>();
-      
-      if (_isLogin) {
-        await authProvider.login(
-          _usernameController.text,
-          _passwordController.text,
-        );
-      } else {
-        await authProvider.register(
-          _usernameController.text,
-          _passwordController.text,
-        );
-        if (authProvider.errorMessage == null) {
-          // Registration successful, now login
-          await authProvider.login(
-            _usernameController.text,
-            _passwordController.text,
-          );
-        }
-      }
-    }
   }
 }

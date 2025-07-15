@@ -1,29 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:studly/app/core/providers/theme_provider.dart';
+import 'package:studly/app/core/providers/theme.provider.dart';
+import 'package:studly/app/core/service/go_router.service.dart';
+import 'package:studly/app/core/service/provider.service.dart';
 import 'package:studly/app/shared/themes/app_theme.dart';
-import 'package:studly/app/wrapper/auth_wrapper.dart';
-import 'package:studly/main.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
 
+  static final ProviderService _providerService = ProviderService();
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider.value(value: themeProvider),
-        ChangeNotifierProvider.value(value: authProvider),
-        ChangeNotifierProvider.value(value: musicProvider),
-      ],
+      providers: _providerService.getProviders(),
       child: Consumer<ThemeProvider>(
         builder:
-            (context, themeProvider, child) => MaterialApp(
+            (context, themeProvider, _) => MaterialApp.router(
               title: 'Studly',
               theme: AppTheme.lightTheme,
               darkTheme: AppTheme.darkTheme,
               themeMode: themeProvider.themeMode,
-              home: const AuthWrapper(),
+              routerConfig: GoRouterService().router, // ✅ correct usage
             ),
       ),
     );

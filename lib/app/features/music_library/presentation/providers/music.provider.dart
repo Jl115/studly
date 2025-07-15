@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
-import '../../data/models/track_model.dart';
+import '../../data/models/track.model.dart';
 
 class MusicProvider extends ChangeNotifier {
   final AudioPlayer _audioPlayer = AudioPlayer();

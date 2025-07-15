@@ -1,5 +1,5 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:studly/app/core/database/database.service.dart';
+import 'package:studly/app/core/database/service/database.service.dart';
 
 abstract class BaseDatabaseRepository {
   final DatabaseService _dbService = DatabaseService();

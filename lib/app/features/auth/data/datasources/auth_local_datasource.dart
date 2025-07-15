@@ -1,7 +1,7 @@
 import 'package:crypto/crypto.dart';
 import 'package:studly/app/core/database/controller/database.controller.dart';
 import 'dart:convert';
-import '../models/user_model.dart';
+import '../models/user.model.dart';
 
 abstract class AuthLocalDataSource {
   Future<UserModel?> login(String username, String password);

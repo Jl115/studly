@@ -87,6 +87,22 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> handleSubmit(formKey, isLogin, usernameController, passwordController) async {
+    if (formKey.currentState!.validate()) {
+      if (isLogin) {
+        await login(usernameController.text, passwordController.text);
+        return;
+      }
+      await register(usernameController.text, passwordController.text);
+      if (errorMessage != null) {
+        // If registration failed, do not proceed to login
+        return;
+      }
+      // Registration successful, now login
+      await login(usernameController.text, passwordController.text);
+    }
+  }
+
   void _setLoading(bool loading) {
     _isLoading = loading;
     notifyListeners();
