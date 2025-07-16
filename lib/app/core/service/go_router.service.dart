@@ -12,9 +12,7 @@ class GoRouterService {
   final GoRouter _router = GoRouter(
     initialLocation: '/',
     routes: AppRoutes.routes,
-    errorBuilder:
-        (context, state) =>
-            Scaffold(body: Center(child: Text('404: ${state.error}'))),
+    errorBuilder: (context, state) => Scaffold(body: Center(child: Text('404: ${state.error}'))),
   );
 
   GoRouter get router => _router;

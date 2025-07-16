@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:studly/app/features/auth/domain/usecases/login_usecase.dart';
+import 'package:studly/app/features/auth/domain/usecases/logout_usecase.dart';
+import 'package:studly/app/features/auth/domain/usecases/register_usecase.dart';
 import '../../domain/entities/user.dart';
-import '../../domain/usecases/auth_usecases.dart';
+import '../../domain/usecases/get_current_user_usecase.dart';
 
 class AuthProvider extends ChangeNotifier {
   final LoginUseCase loginUseCase;
@@ -87,7 +90,12 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> handleSubmit(formKey, isLogin, usernameController, passwordController) async {
+  Future<void> handleSubmit(
+    formKey,
+    isLogin,
+    usernameController,
+    passwordController,
+  ) async {
     if (formKey.currentState!.validate()) {
       if (isLogin) {
         await login(usernameController.text, passwordController.text);

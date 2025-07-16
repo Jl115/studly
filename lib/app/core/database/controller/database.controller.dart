@@ -19,6 +19,32 @@ class DatabaseController extends BaseDatabaseRepository {
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  Future<void> saveSettings(Map<String, dynamic> settings) async {
+    final db = await _dbService.database;
+    for (var entry in settings.entries) {
+      await db.insert('settings', {
+        'key': entry.key,
+        'value': entry.value,
+      }, conflictAlgorithm: ConflictAlgorithm.replace);
+    }
+  }
+
+  Future<Map<String, dynamic>> getValue(String key) async {
+    final db = await _dbService.database;
+    final result = await db.query(key);
+    if (result.isNotEmpty) {
+      return result.first;
+    }
+    return {};
+  }
+
+  Future<void> setValue(String key, dynamic value) async {
+    final db = await _dbService.database;
+    print('\x1B[32mkey -------------------- ${key}\x1B[0m');
+    print('\x1B[32mvalue -------------------- ${value}\x1B[0m');
+    await db.insert(key, {'key': key, 'value': value}, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
   Future<bool> getThemeMode() async {
     final db = await _dbService.database;
     final result = await db.query('settings', where: 'key = ?', whereArgs: ['theme_mode']);

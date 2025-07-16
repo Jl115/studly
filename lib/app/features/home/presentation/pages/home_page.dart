@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:studly/app/core/service/go_router.service.dart';
 import 'package:studly/app/features/home/presentation/widgets/feature_card.dart';
+import 'package:studly/app/shared/widgets/bottom_navigation.dart';
 import '../../../auth/presentation/providers/auth.provider.dart';
 import '../../../../core/providers/theme.provider.dart';
 // import '../../../music/presentation/providers/music_provider.dart';
@@ -18,11 +19,8 @@ class HomePage extends StatelessWidget {
           IconButton(
             icon: Consumer<ThemeProvider>(
               builder:
-                  (context, themeProvider, child) => Icon(
-                    themeProvider.isDarkMode
-                        ? Icons.light_mode
-                        : Icons.dark_mode,
-                  ),
+                  (context, themeProvider, child) =>
+                      Icon(themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode),
             ),
             onPressed: () {
               context.read<ThemeProvider>().toggleTheme();
@@ -36,6 +34,7 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
+      bottomNavigationBar: const BottomNavigation(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -55,10 +54,7 @@ class HomePage extends StatelessWidget {
                           style: Theme.of(context).textTheme.headlineSmall,
                         ),
                         const SizedBox(height: 8),
-                        Text(
-                          'Ready to discover new music?',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
+                        Text('Ready to discover new music?', style: Theme.of(context).textTheme.bodyMedium),
                       ],
                     ),
                   ),
