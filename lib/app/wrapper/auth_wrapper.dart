@@ -12,11 +12,10 @@ class AuthWrapper extends StatelessWidget {
     return Consumer<AuthProvider>(
       builder: (context, authProvider, child) {
         if (authProvider.isLoading) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
+          return const Scaffold(body: Center(child: CircularProgressIndicator()));
         }
 
+        print('\x1B[32mauthProvider.isLoggedIn -------------------- ${authProvider.isLoggedIn}\x1B[0m');
         if (authProvider.isLoggedIn) {
           return const HomePage();
         }

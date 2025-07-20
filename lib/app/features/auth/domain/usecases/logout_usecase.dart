@@ -1,4 +1,4 @@
-import 'package:studly/app/features/auth/domain/repositories/auth.repository.dart';
+import 'package:studly/app/features/auth/data/repositories/authrepository.dart';
 
 class LogoutUseCase {
   final AuthRepository repository;

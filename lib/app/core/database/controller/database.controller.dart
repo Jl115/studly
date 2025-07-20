@@ -67,6 +67,7 @@ class DatabaseController extends BaseDatabaseRepository {
 
   Future<void> removeCurrentUserId() async {
     final db = await _dbService.database;
-    await db.delete('settings', where: 'key = ?', whereArgs: ['current_user_id']);
+    final t = await db.delete('settings', where: 'key = ?', whereArgs: ['current_user_id']);
+    print(t.toString());
   }
 }

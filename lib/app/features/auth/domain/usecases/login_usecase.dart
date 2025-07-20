@@ -1,5 +1,5 @@
+import 'package:studly/app/features/auth/data/repositories/authrepository.dart';
 import 'package:studly/app/features/auth/domain/entities/user.dart';
-import 'package:studly/app/features/auth/domain/repositories/auth.repository.dart';
 
 class LoginUseCase {
   final AuthRepository repository;

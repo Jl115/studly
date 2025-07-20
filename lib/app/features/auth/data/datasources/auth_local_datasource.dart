@@ -1,18 +1,11 @@
+import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:studly/app/core/database/controller/database.controller.dart';
-import 'dart:convert';
-import '../models/user.model.dart';
+import 'package:studly/app/core/service/go_router.service.dart';
+import 'package:studly/app/features/auth/data/models/user.model.dart';
 
-abstract class AuthLocalDataSource {
-  Future<UserModel?> login(String username, String password);
-  Future<bool> register(String username, String password);
-  Future<bool> logout();
-  Future<UserModel?> getCurrentUser();
-  Future<bool> isLoggedIn();
-}
-
-class AuthLocalDataSourceImpl implements AuthLocalDataSource {
-  AuthLocalDataSourceImpl();
+class AuthLocalDataSource {
+  AuthLocalDataSource();
 
   final _databaseController = DatabaseController();
 
@@ -22,7 +15,6 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     return digest.toString();
   }
 
-  @override
   Future<UserModel?> login(String username, String password) async {
     final hashedPassword = _hashPassword(password);
 
@@ -39,7 +31,6 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     return user;
   }
 
-  @override
   Future<bool> register(String username, String password) async {
     final existing = await _databaseController.findOne(table: 'users', where: 'username = ?', whereArgs: [username]);
 
@@ -55,13 +46,12 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     return result > 0;
   }
 
-  @override
   Future<bool> logout() async {
     await _databaseController.removeCurrentUserId();
+    GoRouterService().go('/');
     return true;
   }
 
-  @override
   Future<UserModel?> getCurrentUser() async {
     final userId = await _databaseController.getCurrentUserId();
 
@@ -73,7 +63,6 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     return UserModel.fromMap(result);
   }
 
-  @override
   Future<bool> isLoggedIn() async {
     final userId = await _databaseController.getCurrentUserId();
     return userId != null;

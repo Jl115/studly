@@ -1,7 +1,7 @@
 import 'package:provider/provider.dart';
 import 'package:studly/app/core/providers/theme.provider.dart';
 import 'package:studly/app/features/auth/data/datasources/auth_local_datasource.dart';
-import 'package:studly/app/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:studly/app/features/auth/data/repositories/authrepository.dart';
 import 'package:studly/app/features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'package:studly/app/features/auth/domain/usecases/login_usecase.dart';
 import 'package:studly/app/features/auth/domain/usecases/logout_usecase.dart';
@@ -9,7 +9,7 @@ import 'package:studly/app/features/auth/domain/usecases/register_usecase.dart';
 import 'package:studly/app/features/auth/presentation/providers/auth.provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:studly/app/features/settings/data/datasources/settings_local_datasource.dart';
-import 'package:studly/app/features/settings/domain/repositories/settings_repository_impl.dart';
+import 'package:studly/app/features/settings/data/repositories/settings_repository.dart';
 import 'package:studly/app/features/settings/domain/usecases/load_settings_usecase.dart';
 import 'package:studly/app/features/settings/domain/usecases/save_settings_usecase.dart';
 import 'package:studly/app/features/settings/presentation/providers/settings_provider.dart';
@@ -27,8 +27,8 @@ class ProviderService {
     themeProvider = ThemeProvider();
 
     // Initialize Auth Provider
-    final authLocalDataSource = AuthLocalDataSourceImpl();
-    final authRepository = AuthRepositoryImpl(authLocalDataSource);
+    final authLocalDataSource = AuthLocalDataSource();
+    final authRepository = AuthRepository(authLocalDataSource);
     final loginUseCase = LoginUseCase(authRepository);
     final registerUseCase = RegisterUseCase(authRepository);
     final logoutUseCase = LogoutUseCase(authRepository);
@@ -41,13 +41,10 @@ class ProviderService {
     );
     // Initialize Settings Provider
     final settingsLocalDataSource = SettingsLocalDataSource();
-    final settingsRepository = SettingsRepositoryImpl(settingsLocalDataSource);
+    final settingsRepository = SettingsRepository(settingsLocalDataSource);
     final loadSettingsUseCase = LoadSettingsUseCase(settingsRepository);
     final saveSettingsUseCase = SaveSettingsUseCase(settingsRepository);
-    settingsProvider = SettingsProvider(
-      loadSettingsUseCase,
-      saveSettingsUseCase,
-    );
+    settingsProvider = SettingsProvider(loadSettingsUseCase, saveSettingsUseCase);
   }
 
   List<SingleChildWidget> getProviders() {
