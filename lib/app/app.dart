@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:studly/app/core/providers/theme.provider.dart';
 import 'package:studly/app/core/service/go_router.service.dart';
 import 'package:studly/app/core/service/provider.service.dart';
+import 'package:studly/app/features/settings/presentation/providers/settings_provider.dart';
 import 'package:studly/app/shared/themes/app_theme.dart';
 
 class App extends StatelessWidget {
@@ -14,7 +14,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: _providerService.getProviders(),
-      child: Consumer<ThemeProvider>(
+      child: Consumer<SettingsProvider>(
         builder:
             (context, themeProvider, _) => MaterialApp.router(
               title: 'Studly',

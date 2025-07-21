@@ -2,6 +2,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:studly/app/core/database/service/database.service.dart';
 import 'package:studly/app/core/database/repository/database.repository.dart';
+import 'package:uuid/uuid.dart';
 
 class DatabaseController extends BaseDatabaseRepository {
   static final DatabaseController _instance = DatabaseController._internal();
@@ -13,7 +14,7 @@ class DatabaseController extends BaseDatabaseRepository {
 
   Future<void> setThemeMode(bool isDarkMode) async {
     final db = await _dbService.database;
-    await db.insert('settings', {
+    await db.insert('setting', {
       'key': 'theme_mode',
       'value': isDarkMode ? 1 : 0,
     }, conflictAlgorithm: ConflictAlgorithm.replace);
@@ -22,16 +23,52 @@ class DatabaseController extends BaseDatabaseRepository {
   Future<void> saveSettings(Map<String, dynamic> settings) async {
     final db = await _dbService.database;
     for (var entry in settings.entries) {
-      await db.insert('settings', {
+      await db.insert('setting', {
         'key': entry.key,
         'value': entry.value,
       }, conflictAlgorithm: ConflictAlgorithm.replace);
     }
   }
 
+  Future<Map<String, dynamic>> getJoinedValue({
+    required String table1,
+    required String table2,
+    String? where, // Optional WHERE clause, e.g., 'users.id = ?'
+    List<Object?>? whereArgs, // Arguments for the WHERE clause
+  }) async {
+    final db = await _dbService.database;
+
+    // Base query with the JOIN
+    String sql = 'SELECT * FROM $table1 LEFT JOIN $table2 ON $table2.id = $table1.${table2}_id';
+
+    // Add a WHERE clause if provided
+    if (where != null && where.isNotEmpty) {
+      sql += ' WHERE $where';
+    }
+
+    final result = await db.rawQuery(sql, whereArgs);
+
+    print('\x1B[32mresult getJoinedValue-------------------- ${result.toString()}\x1B[0m');
+
+    if (result.isNotEmpty) {
+      return result.first;
+    }
+    return {};
+  }
+
   Future<Map<String, dynamic>> getValue(String key) async {
     final db = await _dbService.database;
     final result = await db.query(key);
+    print('\x1B[32mresult getValue-------------------- ${result.toString()}\x1B[0m');
+    if (result.isNotEmpty) {
+      return result.first;
+    }
+    return {};
+  }
+
+  Future<Map<String, dynamic>> getUserUuid() async {
+    final db = await _dbService.database;
+    final result = await db.query('user', where: 'username = ?', whereArgs: ['user']);
     if (result.isNotEmpty) {
       return result.first;
     }
@@ -40,34 +77,37 @@ class DatabaseController extends BaseDatabaseRepository {
 
   Future<void> setValue(String key, dynamic value) async {
     final db = await _dbService.database;
-    print('\x1B[32mkey -------------------- ${key}\x1B[0m');
-    print('\x1B[32mvalue -------------------- ${value}\x1B[0m');
+    print('\x1B[32m849386 -------------------- ${849386}\x1B[0m');
     await db.insert(key, {'key': key, 'value': value}, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<bool> getThemeMode() async {
     final db = await _dbService.database;
-    final result = await db.query('settings', where: 'key = ?', whereArgs: ['theme_mode']);
-    return result.isNotEmpty && result.first['value'] == 1;
+    final userId = await getCurrentUserId();
+    final result = await db.query(
+      'setting', // Correct table name
+      where: 'user_id = ?',
+      whereArgs: [userId], // Pass the variable here
+    );
+    print('\x1B[32mresult getThemeMode-------------------- ${result.toString()}\x1B[0m');
+    return result.isNotEmpty && result.first['dark_mode'] == 1;
   }
 
-  Future<void> saveCurrentUserId(int userId) async {
+  Future<void> saveCurrentUserId(String userId) async {
     final db = await _dbService.database;
-    await db.insert('settings', {
-      'key': 'current_user_id',
-      'value': userId,
-    }, conflictAlgorithm: ConflictAlgorithm.replace);
+    await db.insert('setting', {'user_id': userId, 'dark_mode': 0}, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future<int?> getCurrentUserId() async {
+  Future<String?> getCurrentUserId() async {
     final db = await _dbService.database;
-    final result = await db.query('settings', where: 'key = ?', whereArgs: ['current_user_id']);
-    return result.isNotEmpty ? result.first['value'] as int : null;
+    final result = await db.query('user');
+    return result.isNotEmpty ? result.first['id'].toString() : null;
   }
 
   Future<void> removeCurrentUserId() async {
     final db = await _dbService.database;
-    final t = await db.delete('settings', where: 'key = ?', whereArgs: ['current_user_id']);
+    final userId = await getCurrentUserId();
+    final t = await db.delete('setting', where: 'user_id = ?', whereArgs: [userId]);
     print(t.toString());
   }
 }

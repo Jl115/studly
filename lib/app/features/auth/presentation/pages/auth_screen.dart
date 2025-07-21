@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:studly/app/features/settings/data/repositories/settings_repository.dart';
+import 'package:studly/app/features/settings/presentation/providers/settings_provider.dart';
 import '../providers/auth.provider.dart';
-import '../../../../core/providers/theme.provider.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -30,16 +31,13 @@ class _AuthScreenState extends State<AuthScreen> {
         title: Text(_isLogin ? 'Login' : 'Register'),
         actions: [
           IconButton(
-            icon: Consumer<ThemeProvider>(
+            icon: Consumer<SettingsProvider>(
               builder:
-                  (context, themeProvider, child) => Icon(
-                    themeProvider.isDarkMode
-                        ? Icons.light_mode
-                        : Icons.dark_mode,
-                  ),
+                  (context, themeProvider, child) =>
+                      Icon(themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode),
             ),
             onPressed: () {
-              context.read<ThemeProvider>().toggleTheme();
+              context.read<SettingsProvider>().toggleTheme();
             },
           ),
         ],
@@ -65,10 +63,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 // Username Field
                 TextFormField(
                   controller: _usernameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Username',
-                    prefixIcon: Icon(Icons.person),
-                  ),
+                  decoration: const InputDecoration(labelText: 'Username', prefixIcon: Icon(Icons.person)),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a username';
@@ -81,10 +76,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 // Password Field
                 TextFormField(
                   controller: _passwordController,
-                  decoration: const InputDecoration(
-                    labelText: 'Password',
-                    prefixIcon: Icon(Icons.lock),
-                  ),
+                  decoration: const InputDecoration(labelText: 'Password', prefixIcon: Icon(Icons.lock)),
                   obscureText: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -106,9 +98,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         padding: const EdgeInsets.only(bottom: 16),
                         child: Text(
                           authProvider.errorMessage!,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.error,
-                          ),
+                          style: TextStyle(color: Theme.of(context).colorScheme.error),
                         ),
                       );
                     }
@@ -149,11 +139,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     });
                     context.read<AuthProvider>().clearError();
                   },
-                  child: Text(
-                    _isLogin
-                        ? 'Don\'t have an account? Register'
-                        : 'Already have an account? Login',
-                  ),
+                  child: Text(_isLogin ? 'Don\'t have an account? Register' : 'Already have an account? Login'),
                 ),
               ],
             ),

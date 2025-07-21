@@ -1,4 +1,3 @@
-import 'package:studly/app/features/settings/data/repositories/settings_repository.dart';
 import 'package:studly/app/features/settings/domain/entities/settings_entity.dart';
 
 import '../../data/datasources/settings_local_datasource.dart';
@@ -11,5 +10,12 @@ class SettingsRepository {
 
   Future<SettingsEntity> loadSettings() => local.load();
 
-  Future<void> saveSettings(SettingsEntity settings) => local.save(SettingsModel(darkMode: settings.darkMode));
+  Future<void> saveSettings(SettingsEntity settings) => local.save(
+    SettingsModel(
+      darkMode: settings.darkMode,
+      username: settings.username,
+      password: settings.password,
+      themeModeName: settings.themeModeName,
+    ),
+  );
 }

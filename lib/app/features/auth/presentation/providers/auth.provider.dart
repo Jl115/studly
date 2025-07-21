@@ -52,6 +52,7 @@ class AuthProvider extends ChangeNotifier {
 
     try {
       final success = await registerUseCase(username, password);
+      print('\x1B[32msuccess -------------------- ${success}\x1B[0m');
       if (!success) {
         _setError('Registration failed. User might already exist.');
       }
@@ -90,12 +91,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> handleSubmit(
-    formKey,
-    isLogin,
-    usernameController,
-    passwordController,
-  ) async {
+  Future<void> handleSubmit(formKey, isLogin, usernameController, passwordController) async {
     if (formKey.currentState!.validate()) {
       if (isLogin) {
         await login(usernameController.text, passwordController.text);

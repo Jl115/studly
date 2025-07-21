@@ -1,5 +1,4 @@
 import 'package:provider/provider.dart';
-import 'package:studly/app/core/providers/theme.provider.dart';
 import 'package:studly/app/features/auth/data/datasources/auth_local_datasource.dart';
 import 'package:studly/app/features/auth/data/repositories/authrepository.dart';
 import 'package:studly/app/features/auth/domain/usecases/get_current_user_usecase.dart';
@@ -19,13 +18,10 @@ class ProviderService {
 
   factory ProviderService() => _instance;
 
-  late final ThemeProvider themeProvider;
   late final AuthProvider authProvider;
   late final SettingsProvider settingsProvider;
 
   ProviderService._internal() {
-    themeProvider = ThemeProvider();
-
     // Initialize Auth Provider
     final authLocalDataSource = AuthLocalDataSource();
     final authRepository = AuthRepository(authLocalDataSource);
@@ -49,7 +45,6 @@ class ProviderService {
 
   List<SingleChildWidget> getProviders() {
     return [
-      ChangeNotifierProvider<ThemeProvider>.value(value: themeProvider),
       ChangeNotifierProvider<AuthProvider>.value(value: authProvider),
       ChangeNotifierProvider<SettingsProvider>.value(value: settingsProvider),
     ];
@@ -57,7 +52,6 @@ class ProviderService {
 
   Future<void> init() async {
     await settingsProvider.load();
-    await themeProvider.loadTheme();
     await authProvider.checkAuthStatus();
   }
 }

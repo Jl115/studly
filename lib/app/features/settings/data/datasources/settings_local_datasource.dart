@@ -4,12 +4,13 @@ import 'package:studly/app/core/database/controller/database.controller.dart';
 import '../models/settings_model.dart';
 
 class SettingsLocalDataSource {
-  final _key = 'settings';
+  final _key = 'setting';
 
   final _databaseController = DatabaseController();
 
   Future<SettingsModel> load() async {
-    final jsonMap = await _databaseController.getValue(_key);
+    final jsonMap = await _databaseController.getJoinedValue(table1: _key, table2: 'user');
+    print('\x1B[32mjsonMap -------------------- ${jsonMap.toString()}\x1B[0m');
     return SettingsModel.fromJson(jsonMap);
   }
 
