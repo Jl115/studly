@@ -43,7 +43,6 @@ class SettingsProvider extends ChangeNotifier {
 
   Future<void> load() async {
     _settings = await loadSettingsUseCase();
-    print('\x1B[32m_settings -------------------- ${_settings.toString()}\x1B[0m');
     await loadTheme();
     notifyListeners();
   }

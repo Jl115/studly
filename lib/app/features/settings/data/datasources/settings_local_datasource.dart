@@ -10,7 +10,6 @@ class SettingsLocalDataSource {
 
   Future<SettingsModel> load() async {
     final jsonMap = await _databaseController.getJoinedValue(table1: _key, table2: 'user');
-    print('\x1B[32mjsonMap -------------------- ${jsonMap.toString()}\x1B[0m');
     return SettingsModel.fromJson(jsonMap);
   }
 

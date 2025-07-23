@@ -22,9 +22,7 @@ class DatabaseService {
 
     // reset db
     // await deleteDatabase(path);
-
     print('\x1B[32m dbPath :D -------------------- ${path}\x1B[0m');
-
     return await openDatabase(path, version: 1, onCreate: _createDb);
   }
 
@@ -49,7 +47,12 @@ class DatabaseService {
     const uuid = Uuid();
     final newUserId = uuid.v4();
 
-    await db.insert('user', {'id': newUserId, 'username': 'user', 'password': 'user'});
+    await db.insert('user', {
+      'id': newUserId,
+      'username': 'user',
+      'password': '04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb',
+      'logged_in': 1,
+    });
 
     await db.insert('setting', {'user_id': newUserId, 'dark_mode': 0});
   }

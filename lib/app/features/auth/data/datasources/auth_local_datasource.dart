@@ -18,7 +18,6 @@ class AuthLocalDataSource {
 
   Future<UserModel?> login(String username, String password) async {
     final hashedPassword = _hashPassword(password);
-
     final result = await _databaseController.findOne(
       table: 'user',
       where: 'username = ? AND password = ?',
@@ -28,7 +27,7 @@ class AuthLocalDataSource {
     if (result == null) return null;
 
     final user = UserModel.fromMap(result);
-    await _databaseController.saveCurrentUserId(user.id!);
+    await _databaseController.updateValue('user', 'logged_in', 1, 'id', user.id!);
     return user;
   }
 
@@ -44,30 +43,33 @@ class AuthLocalDataSource {
       table: 'user',
       data: {'id': id.toString(), 'username': username, 'password': hashedPassword},
     );
-    print('\x1B[32mresult -------------------- ${result}\x1B[0m');
     return result > 0;
   }
 
   Future<bool> logout() async {
-    await _databaseController.removeCurrentUserId();
+    final user = await getCurrentUser();
+    if (user == null) return false;
+    await _databaseController.updateValue('user', 'logged_in', 0, 'id', user.id);
     GoRouterService().go('/');
     return true;
   }
 
   Future<UserModel?> getCurrentUser() async {
     final userId = await _databaseController.getCurrentUserId();
-    print('\x1B[32muserId -------------------- ${userId}\x1B[0m');
-
     if (userId == null) return null;
-
     final result = await _databaseController.findOne(table: 'user', where: 'id = ?', whereArgs: [userId]);
-
     if (result == null) return null;
     return UserModel.fromMap(result);
   }
 
   Future<bool> isLoggedIn() async {
     final userId = await _databaseController.getCurrentUserId();
-    return userId != null;
+    if (userId == null) return false;
+    final result = await _databaseController.findOne(
+      table: 'user',
+      where: 'id = ? AND logged_in = ?',
+      whereArgs: [userId, 1],
+    );
+    return result != null;
   }
 }

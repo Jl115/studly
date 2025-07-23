@@ -52,7 +52,6 @@ class AuthProvider extends ChangeNotifier {
 
     try {
       final success = await registerUseCase(username, password);
-      print('\x1B[32msuccess -------------------- ${success}\x1B[0m');
       if (!success) {
         _setError('Registration failed. User might already exist.');
       }
