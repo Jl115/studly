@@ -1,4 +1,5 @@
 import 'package:provider/provider.dart';
+import 'package:studly/app/core/providers/navbar_provider.dart';
 import 'package:studly/app/features/auth/data/datasources/auth_local_datasource.dart';
 import 'package:studly/app/features/auth/data/repositories/authrepository.dart';
 import 'package:studly/app/features/auth/domain/usecases/get_current_user_usecase.dart';
@@ -47,6 +48,7 @@ class ProviderService {
     return [
       ChangeNotifierProvider<AuthProvider>.value(value: authProvider),
       ChangeNotifierProvider<SettingsProvider>.value(value: settingsProvider),
+      ChangeNotifierProvider<NavbarProvider>.value(value: NavbarProvider()),
     ];
   }
 

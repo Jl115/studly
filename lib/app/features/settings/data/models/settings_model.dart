@@ -26,4 +26,8 @@ class SettingsModel extends SettingsEntity {
   String toString() {
     return 'SettingsModel{darkMode: $darkMode, username: $username, password: $password, themeModeName: $themeModeName}';
   }
+
+  Map<String, dynamic> toDatabaseModel() {
+    return {'dark_mode': darkMode ? 1 : 0};
+  }
 }

@@ -36,6 +36,9 @@ class SettingsProvider extends ChangeNotifier {
 
   set themeModeName(String value) {
     _themeModeName = value;
+    _isDarkMode = value == 'dark';
+    _settings = SettingsEntity(darkMode: _isDarkMode, username: _username, password: _password, themeModeName: value);
+    saveSettingsUseCase(_settings);
     notifyListeners();
   }
 
@@ -43,6 +46,10 @@ class SettingsProvider extends ChangeNotifier {
 
   Future<void> load() async {
     _settings = await loadSettingsUseCase();
+    _isDarkMode = _settings.darkMode;
+    _username = _settings.username;
+    _password = _settings.password;
+    _themeModeName = _settings.themeModeName;
     await loadTheme();
     notifyListeners();
   }

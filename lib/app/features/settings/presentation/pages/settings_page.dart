@@ -271,19 +271,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     Navigator.pop(context);
                   },
                 ),
-                RadioListTile<ThemeMode>(
-                  title: const Text('System Default'),
-                  value: ThemeMode.system,
-                  groupValue: provider.themeMode,
-                  onChanged: (value) {
-                    provider.themeModeName = value!.name;
-                    Navigator.pop(context);
-                  },
-                ),
               ],
             ),
           ),
     );
   }
 }
-
