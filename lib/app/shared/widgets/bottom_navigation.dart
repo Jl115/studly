@@ -4,7 +4,7 @@ import 'package:studly/app/core/providers/navbar_provider.dart';
 
 const double kBottomNavBarHeight = 90.0;
 // New constant for the small, invisible handle when the bar is "hidden"
-const double kBottomNavHandleHeight = 20.0;
+const double kBottomNavHandleHeight = 30.0;
 
 class BottomNavigation extends StatelessWidget {
   const BottomNavigation({super.key});
@@ -18,17 +18,16 @@ class BottomNavigation extends StatelessWidget {
     return GestureDetector(
       // This makes the entire area draggable, including the transparent handle.
       behavior: HitTestBehavior.translucent,
+      onTap: () => navBarProvider.show(), // Tap to show the bar
       onVerticalDragUpdate: (details) {
         // Use `listen: false` inside event handlers for performance.
-        final provider = Provider.of<NavbarProvider>(context, listen: false);
-
         // Swipe down on the visible bar to hide it
         if (details.delta.dy > 5 && isVisible) {
-          provider.hide();
+          navBarProvider.hide();
         }
         // Swipe up on the handle area to show it
         else if (details.delta.dy < -5 && !isVisible) {
-          provider.show();
+          navBarProvider.show();
         }
       },
       child: AnimatedContainer(
