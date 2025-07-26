@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:studly/app/core/service/go_router.service.dart';
 import 'package:studly/app/features/home/presentation/widgets/feature_card.dart';
+import 'package:studly/app/features/settings/presentation/providers/settings_provider.dart';
 import 'package:studly/app/shared/widgets/bottom_navigation.dart';
 import '../../../auth/presentation/providers/auth.provider.dart';
-import '../../../../core/providers/theme.provider.dart';
 // import '../../../music/presentation/providers/music_provider.dart';
 
 class HomePage extends StatelessWidget {
@@ -17,13 +17,13 @@ class HomePage extends StatelessWidget {
         title: const Text('Studly'),
         actions: [
           IconButton(
-            icon: Consumer<ThemeProvider>(
+            icon: Consumer<SettingsProvider>(
               builder:
                   (context, themeProvider, child) =>
                       Icon(themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode),
             ),
             onPressed: () {
-              context.read<ThemeProvider>().toggleTheme();
+              context.read<SettingsProvider>().toggleTheme();
             },
           ),
           IconButton(

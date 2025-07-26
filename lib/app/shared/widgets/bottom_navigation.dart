@@ -1,63 +1,71 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart'; // Import GoRouter
-import 'package:studly/app/core/service/go_router.service.dart';
+import 'package:provider/provider.dart';
+import 'package:studly/app/core/providers/navbar_provider.dart';
+
+const double kBottomNavBarHeight = 90.0;
+// New constant for the small, invisible handle when the bar is "hidden"
+const double kBottomNavHandleHeight = 30.0;
 
 class BottomNavigation extends StatelessWidget {
   const BottomNavigation({super.key});
 
-  // Helper method to get the current index from the route location
-  int _calculateSelectedIndex(BuildContext context) {
-    final String location = GoRouterState.of(context).uri.toString();
-    if (location.startsWith('/home')) {
-      return 0;
-    }
-    if (location.startsWith('/musicLibrary')) {
-      return 1;
-    }
-    if (location.startsWith('/settings')) {
-      return 2;
-    }
-    return 0; // Default to home
-  }
-
-  void _onItemTapped(int index) {
-    // Navigation logic remains the same
-    GoRouterService().go(
-      index == 0
-          ? '/home'
-          : index == 1
-          ? '/musicLibrary'
-          : '/settings',
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Calculate the selected index based on the current route
-    final selectedIndex = _calculateSelectedIndex(context);
+    final navBarProvider = Provider.of<NavbarProvider>(context);
+    final isVisible = navBarProvider.isNavBarVisible;
+    final selectedIndex = navBarProvider.calculateSelectedIndex(context);
 
-    return BottomAppBar(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: List.generate(3, (index) {
-          final icons = [Icons.home, Icons.search, Icons.settings];
-          final isSelected = selectedIndex == index;
+    return GestureDetector(
+      // This makes the entire area draggable, including the transparent handle.
+      behavior: HitTestBehavior.translucent,
+      onTap: () => navBarProvider.show(), // Tap to show the bar
+      onVerticalDragUpdate: (details) {
+        // Use `listen: false` inside event handlers for performance.
+        // Swipe down on the visible bar to hide it
+        if (details.delta.dy > 5 && isVisible) {
+          navBarProvider.hide();
+        }
+        // Swipe up on the handle area to show it
+        else if (details.delta.dy < -5 && !isVisible) {
+          navBarProvider.show();
+        }
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+        // Animate between the full height and the handle's height, NOT 0.
+        height: isVisible ? kBottomNavBarHeight : kBottomNavHandleHeight,
+        child: Wrap(
+          // Wrap prevents overflow errors when the height shrinks.
+          clipBehavior: Clip.hardEdge,
+          children: [
+            BottomAppBar(
+              height: kBottomNavBarHeight,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: List.generate(3, (index) {
+                  final icons = [Icons.home, Icons.search, Icons.settings];
+                  final isSelected = selectedIndex == index;
 
-          return GestureDetector(
-            onTap: () => _onItemTapped(index),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              decoration: BoxDecoration(
-                color: isSelected ? Colors.blue.withOpacity(0.1) : Colors.transparent,
-                borderRadius: BorderRadius.circular(16),
+                  return GestureDetector(
+                    onTap: () => navBarProvider.onItemTapped(index),
+                    behavior: HitTestBehavior.translucent,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      decoration: BoxDecoration(
+                        color: isSelected ? Colors.blue.withOpacity(0.1) : Colors.transparent,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Icon(icons[index], color: isSelected ? Colors.blue : Colors.grey),
+                    ),
+                  );
+                }),
               ),
-              child: Icon(icons[index], color: isSelected ? Colors.blue : Colors.grey),
             ),
-          );
-        }),
+          ],
+        ),
       ),
     );
   }
 }
-

@@ -90,12 +90,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> handleSubmit(
-    formKey,
-    isLogin,
-    usernameController,
-    passwordController,
-  ) async {
+  Future<void> handleSubmit(formKey, isLogin, usernameController, passwordController) async {
     if (formKey.currentState!.validate()) {
       if (isLogin) {
         await login(usernameController.text, passwordController.text);
